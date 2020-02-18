@@ -11,18 +11,17 @@ class MoviesController < ApplicationController
   end
 
   def index
-    
-     @all_ratings = Movie.rating
-     if(params[:ratings] != NIL)
+      @all_ratings = Movie.rating
+      if(params[:ratings] != NIL)
         session[:ratings] = params[:ratings]
-     end
-     if(params[:sort] != NIL)
+      end
+      if(params[:sort] != NIL)
         session[:sort] = params[:sort]
-     end
+      end
       if(params[:id] != NIL)
         session[:id] = params[:id]
       end
-
+     
       if(((params[:ratings] == NIL) && !(session[:ratings] == NIL) ) || (params[:sort] == NIL)  && !(session[:sort] == NIL))
         redirect_to movies_path("ratings" => session[:ratings], "sort" => session[:sort])
       else 
@@ -30,28 +29,27 @@ class MoviesController < ApplicationController
           rating_array = params[:ratings].keys
           @movies = Movie.where(rating: rating_array).order(params[:sort])
         elsif(params[:ratings] != NIL)
+          rating_array = params[:ratings].keys
           @movies = Movie.where(rating: rating_array)
         elsif(params[:sort] != NIL)
-          rating_array = params[:ratings].keys
           @movies = Movie.order(params[:sort])
         else
           @movies = Movie.all
         end
       end
-     instance_variable_set("@#{session[:id]}_hilite", "hilite")
-     
+      instance_variable_set("@#{session[:id]}_hilite", "hilite")
   end
-
+  
   def new
     # default: render 'new' template
   end
-
+  
   def create
     @movie = Movie.create!(movie_params)
     flash[:notice] = "#{@movie.title} was successfully created."
     redirect_to movies_path
   end
-
+  
   def edit
     @movie = Movie.find params[:id]
   end
@@ -69,5 +67,6 @@ class MoviesController < ApplicationController
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
   end
+  
 
 end
